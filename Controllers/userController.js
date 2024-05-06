@@ -53,12 +53,7 @@ const login = async (req, res) => {
             expiresIn: "1h",
           }
         );
-        // console.log("Este es el token generado", token);
-        // localStorage.set({ access_token: token });
-        res.status(200).json({ token: token });
-        // res.status(200).json({ msg: "Login successful" });
-
-        // res.status(200).json({ token: token });
+        res.status(200).json({ msg: "Login successful", token: token });
       } else {
         res.status(403).json({ msg: "Forbidden" });
       }
