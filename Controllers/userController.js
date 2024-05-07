@@ -1,4 +1,4 @@
-const { userModel } = require("../models/user.model.js");
+const { userModel } = require("../Models/user.model.js");
 
 // Libreria para encriptar contraseña
 const bcrypt = require("bcryptjs");
@@ -7,6 +7,20 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const tokenSecret = process.env.MYTOKENSECRET;
+
+const uniqueUser = async (req, res, next) => {
+  await userModel
+    .findOne({ email: req.body.email })
+    .then((user) => {
+      console.log("user", req.body.email);
+      console.log("found", user.email);
+      res.status(409).json({ msg: "User already exists" });
+    })
+    .catch(() => {
+      next();
+      // res.status(200).json({ msg: "User does not exist" });
+    });
+};
 
 const addUser = async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -86,4 +100,5 @@ module.exports = {
   getUser,
   login,
   verifyToken,
+  uniqueUser,
 };
