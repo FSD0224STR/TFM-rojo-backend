@@ -14,7 +14,7 @@ const uniqueUser = async (req, res, next) => {
     .then((user) => {
       console.log("user", req.body.email);
       console.log("found", user.email);
-      res.status(409).json({ msg: "User already exists" });
+      res.status(409).json({ msg: "User already exists BD" });
     })
     .catch(() => {
       next();
@@ -37,7 +37,7 @@ const addUser = async (req, res) => {
     .catch((err) => {
       // console.log(err.code);
       if (err.code === 11000) {
-        res.status(409).json({ msg: "User already exists" });
+        res.status(409).json({ msg: "User already exists E11000" });
       } else {
         console.log(err);
         res.status(500).json(err);
@@ -59,15 +59,16 @@ const login = async (req, res) => {
         const token = jwt.sign(
           {
             id: user._id,
-            name: user.firstName + " " + user.lastName,
+            name: user.name + " " + user.lastName,
             email: user.email,
+            role: user.roles,
           },
           tokenSecret,
           {
-            expiresIn: "1h",
+            expiresIn: "24h",
           }
         );
-        res.status(200).json({ msg: "Login successful", token: token });
+        res.status(200).json(token);
       } else {
         res.status(403).json({ msg: "Forbidden" });
       }
@@ -78,21 +79,45 @@ const login = async (req, res) => {
 };
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
-  // console.log("Este es el token", token);
+  console.log(req.headers.authorization);
+  var token = req.headers.authorization?.split(" ")[1];
+  // console.log(token);
+
   try {
     const decodeToken = jwt.verify(token, tokenSecret);
-    // console.log("Decoded token", decodeToken);
-    next();
-  } catch (e) {
-    res.status(400).json({ msg: e.message });
+    // console.log(decodeToken);
+    if (decodeToken.role.toLowerCase() === "admin") {
+      next();
+    } else {
+      res.status(403).json({ msg: "Forbidden" });
+    }
+  } catch (err) {
+    res.status(400).json({ message: err });
   }
-  // if (decodeToken) return next();
-  // res.status(403).json({ msg: "Forbidden" });
 };
 
 const getUser = async (req, res) => {
   userModel.find().then((data) => res.status(200).json(data));
+};
+
+const isAuthenticated = (req, res, next) => {
+  // console.log(req.headers.authorization);
+  var token = req.headers.authorization?.split(" ")[1];
+  try {
+    const decodedToken = jwt.verify(token, tokenSecret);
+    // console.log('a ver que es esto de token decodificado', decodedToken)
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    res.status(404).json(error);
+  }
+};
+
+const getMyUserInfo = async (req, res) => {
+  const userFound = await userModel.findById(req.user.id);
+  const modifiedUser = { ...userFound, password: "Esto no se puede mostrar" };
+  console.log(modifiedUser._doc);
+  res.status(200).json(modifiedUser._doc);
 };
 
 module.exports = {
@@ -101,4 +126,6 @@ module.exports = {
   login,
   verifyToken,
   uniqueUser,
+  isAuthenticated,
+  getMyUserInfo,
 };
