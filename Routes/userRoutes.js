@@ -4,12 +4,16 @@ const {
   addUser,
   login,
   verifyToken,
+  uniqueUser,
+  isAuthenticated,
+  getMyUserInfo,
 } = require("../Controllers/userController.js");
 
 const userRouter = Router();
 
-userRouter.post("/newUser", addUser);
+userRouter.post("/newUser", uniqueUser, addUser);
 userRouter.post("/login", login);
-userRouter.get("/getUser", verifyToken, getUser);
+userRouter.get("/getUsers", verifyToken, getUser);
+userRouter.get("/me", isAuthenticated, getMyUserInfo);
 
 module.exports = { userRouter };
