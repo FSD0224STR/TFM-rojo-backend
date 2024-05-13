@@ -39,7 +39,7 @@ const addUser = async (req, res) => {
       if (err.code === 11000) {
         res.status(409).json({ msg: "User already exists E11000" });
       } else {
-        console.log(err);
+        // console.log(err);
         res.status(500).json(err);
       }
     });
@@ -63,10 +63,10 @@ const login = async (req, res) => {
             email: user.email,
             role: user.roles,
           },
-          tokenSecret,
-          {
-            expiresIn: "24h",
-          }
+          tokenSecret
+          // {
+          //   expiresIn: "24h",
+          // }
         );
         res.status(200).json(token);
       } else {
@@ -79,25 +79,29 @@ const login = async (req, res) => {
 };
 
 const verifyToken = (req, res, next) => {
-  console.log(req.headers.authorization);
+  // console.log(req.headers.authorization);
   var token = req.headers.authorization?.split(" ")[1];
   // console.log(token);
 
   try {
     const decodeToken = jwt.verify(token, tokenSecret);
     // console.log(decodeToken);
-    if (decodeToken.role.toLowerCase() === "admin") {
-      next();
-    } else {
-      res.status(403).json({ msg: "Forbidden" });
-    }
+    next();
+    // if (decodeToken.role.toLowerCase() === "admin") {
+    //   next();
+    // } else {
+    //   res.status(403).json({ msg: "Forbidden" });
+    // }
   } catch (err) {
     res.status(400).json({ message: err });
   }
 };
 
 const getUser = async (req, res) => {
-  userModel.find().then((data) => res.status(200).json(data));
+  userModel
+    .find()
+    .then((data) => res.status(200).json(data))
+    .catch((err) => res.status(500).json(err));
 };
 
 const isAuthenticated = (req, res, next) => {
@@ -105,9 +109,7 @@ const isAuthenticated = (req, res, next) => {
   var token = req.headers.authorization?.split(" ")[1];
   try {
     const decodedToken = jwt.verify(token, tokenSecret);
-    // console.log('a ver que es esto de token decodificado', decodedToken)
-    req.user = decodedToken;
-    next();
+    res.status(200).json(decodedToken);
   } catch (error) {
     res.status(404).json(error);
   }
@@ -115,9 +117,12 @@ const isAuthenticated = (req, res, next) => {
 
 const getMyUserInfo = async (req, res) => {
   const userFound = await userModel.findById(req.user.id);
-  const modifiedUser = { ...userFound, password: "Esto no se puede mostrar" };
-  console.log(modifiedUser._doc);
-  res.status(200).json(modifiedUser._doc);
+  const modifiedUser = {
+    ...userFound._doc,
+    password: "Esto no se puede mostrar",
+  };
+  console.log(modifiedUser);
+  res.status(200).json(modifiedUser);
 };
 
 module.exports = {
