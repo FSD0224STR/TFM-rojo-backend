@@ -85,13 +85,7 @@ const verifyToken = (req, res, next) => {
 
   try {
     const decodeToken = jwt.verify(token, tokenSecret);
-    // console.log(decodeToken);
     next();
-    // if (decodeToken.role.toLowerCase() === "admin") {
-    //   next();
-    // } else {
-    //   res.status(403).json({ msg: "Forbidden" });
-    // }
   } catch (err) {
     res.status(400).json({ message: err });
   }
@@ -125,6 +119,44 @@ const getMyUserInfo = async (req, res) => {
   res.status(200).json(modifiedUser);
 };
 
+const userExists = async (req, res, next) => {
+  const userEmail = req.body.user.email;
+  await userModel
+    .findOne({ email: userEmail })
+    .then(async (user) => {
+      // console.log("user", user);
+      const passwordCompere = await bcrypt.compare(
+        req.body.user.oldPassword,
+        user.password
+      );
+      if (passwordCompere) {
+        // Ahora se genera un token para dar acceso al resto de llamadas
+        next();
+      } else {
+        res.status(403).json({ msg: "wrong old password" });
+      }
+    })
+    .catch(() => {
+      res.status(404).json({ msg: "User not found" });
+    });
+};
+
+const updatePassword = async (req, res) => {
+  const hashedPassword = await bcrypt.hash(req.body.user.newPassword, 10);
+  // console.log(hashedPassword);
+  await userModel
+    .findOneAndUpdate(
+      { email: req.body.user.email },
+      { password: hashedPassword }
+    )
+    .then(() => {
+      res.status(200).json({ msg: "success" });
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+};
+
 module.exports = {
   addUser,
   getUser,
@@ -133,4 +165,6 @@ module.exports = {
   uniqueUser,
   isAuthenticated,
   getMyUserInfo,
+  userExists,
+  updatePassword,
 };
