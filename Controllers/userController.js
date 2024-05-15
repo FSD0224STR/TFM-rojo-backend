@@ -158,7 +158,7 @@ const updatePassword = async (req, res) => {
 };
 
 const searchUser = async (req, res) => {
-  console.log(req.body.id);
+  // console.log(req.body.id);
   await userModel
     .findById(req.body.id)
     .then((user) => {
