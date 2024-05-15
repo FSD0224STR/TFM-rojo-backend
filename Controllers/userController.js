@@ -157,6 +157,18 @@ const updatePassword = async (req, res) => {
     });
 };
 
+const searchUser = async (req, res) => {
+  // console.log(req.body.id);
+  await userModel
+    .findById(req.body.id)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+};
+
 module.exports = {
   addUser,
   getUser,
@@ -167,4 +179,5 @@ module.exports = {
   getMyUserInfo,
   userExists,
   updatePassword,
+  searchUser,
 };
