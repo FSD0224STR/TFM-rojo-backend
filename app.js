@@ -5,8 +5,9 @@ const cors = require("cors");
 const app = express(); //Instancia
 const port = 3000; //Puerto donde va a funcionar
 
-const { userRouter } = require("./routes/userRoutes.js");
+require("dotenv").config();
 
+const { userRouter } = require("./Routes/userRoutes");
 
 const mongoose = require("mongoose");
 const mongoDB =
