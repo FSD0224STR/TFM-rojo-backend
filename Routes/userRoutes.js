@@ -10,6 +10,7 @@ const {
   userExists,
   updatePassword,
   searchUser,
+  updateUser,
 } = require("../Controllers/userController.js");
 
 const userRouter = Router();
@@ -20,4 +21,6 @@ userRouter.get("/getUsers", verifyToken, getUser);
 userRouter.get("/me", isAuthenticated);
 userRouter.put("/updatePassword", userExists, updatePassword);
 userRouter.post("/searchUser", searchUser);
+userRouter.put("/updateUser", updateUser);
+
 module.exports = { userRouter };
