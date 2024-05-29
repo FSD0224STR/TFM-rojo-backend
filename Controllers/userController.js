@@ -170,9 +170,9 @@ const searchUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  console.log(req.body);
+  console.log("update:", req.body);
   await userModel
-    .findByIdAndUpdate(req.body.id, { ...req.body })
+    .findByIdAndUpdate(req.body.userId, { ...req.body })
     .then(res.status(200).json({ msg: "success" }))
     .catch((err) => {
       res.status(500).json(err);
