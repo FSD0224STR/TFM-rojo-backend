@@ -15,7 +15,21 @@ const getDates = async (req, res) => {
     .catch((err) => res.status(500).json(err));
 };
 
+const deleteDate = async (req, res) => {
+  // console.log(req.params.id);
+  await datesModel
+    .findByIdAndDelete(req.params.id, req.body)
+    .then((data) => res.status(200).json({ msg: "Deleted", data: data }))
+    .catch((err) => res.status(500).json(err));
+};
+
+const changeStatusDate = async (req, res) => {
+  console.log(req.body);
+};
+
 module.exports = {
   newDate,
   getDates,
+  deleteDate,
+  changeStatusDate,
 };

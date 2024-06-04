@@ -12,8 +12,8 @@ const uniqueUser = async (req, res, next) => {
   await userModel
     .findOne({ email: req.body.email })
     .then((user) => {
-      console.log("user", req.body.email);
-      console.log("found", user.email);
+      // console.log("user", req.body.email);
+      // console.log("found", user.email);
       res.status(409).json({ msg: "User already exists BD" });
     })
     .catch(() => {
@@ -115,7 +115,7 @@ const getMyUserInfo = async (req, res) => {
     ...userFound._doc,
     password: "Esto no se puede mostrar",
   };
-  console.log(modifiedUser);
+  // console.log(modifiedUser);
   res.status(200).json(modifiedUser);
 };
 
@@ -161,7 +161,10 @@ const searchUser = async (req, res) => {
   // console.log(req.body.id);
   await userModel
     .findById(req.body.id)
-    .then((user) => {
+    .then(async (user) => {
+      // const userSearched = user;
+      user.password = "";
+      // console.log(user);
       res.status(200).json(user);
     })
     .catch((err) => {
@@ -170,7 +173,7 @@ const searchUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  console.log("update:", req.body);
+  // console.log("update:", req.body);
   await userModel
     .findByIdAndUpdate(req.body.userId, { ...req.body })
     .then(res.status(200).json({ msg: "success" }))
