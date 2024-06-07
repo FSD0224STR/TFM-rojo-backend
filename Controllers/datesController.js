@@ -24,7 +24,14 @@ const deleteDate = async (req, res) => {
 };
 
 const changeStatusDate = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
+  await datesModel
+    .findByIdAndUpdate(req.body.id, {
+      state: req.body.status,
+      color: req.body.color,
+    })
+    .then((data) => res.status(200).json(data))
+    .catch((err) => res.status(500).json(err));
 };
 
 module.exports = {
