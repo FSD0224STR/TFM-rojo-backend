@@ -9,7 +9,7 @@ const corsOptions = {
 };
 
 const app = express(); //Instancia
-const port = 3000; //Puerto donde va a funcionar
+const port = process.env.port || 3000; //Puerto donde va a funcionar
 // app.use(cors(corsOptions));
 app.use(cors());
 require("dotenv").config();
