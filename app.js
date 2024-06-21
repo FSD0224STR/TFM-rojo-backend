@@ -1,19 +1,21 @@
-const express = require("express");
-const cors = require("cors");
-// const corsOptions = {
-//   origin: "*",
-//   credentials: true, //access-control-allow-credentials:true
-//   optionSuccessStatus: 200,
-// };
-
-const app = express(); //Instancia
-const port = 3000; //Puerto donde va a funcionar
-// app.use(cors(corsOptions));
-app.use(cors());
 require("dotenv").config();
 
-const { userRouter } = require("./Routes/userRoutes");
-const { dateRouter } = require("./Routes/datesRoutes");
+const express = require("express");
+const cors = require("cors");
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+
+const app = express(); //Instancia
+const port = process.env.port || 3000; //Puerto donde va a funcionar
+
+const { userRouter } = require("./routes/userRoutes.js");
+const { dateRouter } = require("./routes/datesRoutes.js");
+
+app.use(cors());
+require("dotenv").config();
 
 const mongoose = require("mongoose");
 const mongoDB =
