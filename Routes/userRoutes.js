@@ -1,10 +1,26 @@
 const { Router } = require("express");
-const { getUser, addUser, login } = require("../Controllers/userController.js");
+const {
+  getUser,
+  addUser,
+  login,
+  verifyToken,
+  uniqueUser,
+  isAuthenticated,
+  getMyUserInfo,
+  userExists,
+  updatePassword,
+  searchUser,
+  updateUser,
+} = require("../Controllers/userController.js");
 
 const userRouter = Router();
 
-userRouter.post("/newUser", addUser);
+userRouter.post("/newUser", uniqueUser, addUser);
 userRouter.post("/login", login);
-userRouter.get("/getUser", getUser);
+userRouter.get("/getUsers", verifyToken, getUser);
+userRouter.get("/me", isAuthenticated);
+userRouter.put("/updatePassword", userExists, updatePassword);
+userRouter.post("/searchUser", searchUser);
+userRouter.put("/updateUser", updateUser);
 
 module.exports = { userRouter };
