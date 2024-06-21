@@ -9,7 +9,7 @@ const cors = require("cors");
 // };
 
 const app = express(); //Instancia
-const port = 3000; //Puerto donde va a funcionar
+const port = process.env.port || 3000; //Puerto donde va a funcionar
 
 const { userRouter } = require("./routes/userRoutes.js");
 
