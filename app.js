@@ -2,17 +2,16 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
-// const corsOptions = {
-//   origin: "*",
-//   credentials: true, //access-control-allow-credentials:true
-//   optionSuccessStatus: 200,
-// };
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 
 const app = express(); //Instancia
-const port = process.env.port || 3000; //Puerto donde va a funcionar
-
-const { userRouter } = require("./routes/userRoutes.js");
-
+const port = 3000; //Puerto donde va a funcionar
+// app.use(cors(corsOptions));
+app.use(cors());
 require("dotenv").config();
 
 const mongoose = require("mongoose");
