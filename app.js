@@ -14,6 +14,9 @@ const port = process.env.port || 3000; //Puerto donde va a funcionar
 app.use(cors());
 require("dotenv").config();
 
+const { userRouter } = require("./routes/userRoutes.js");
+const { dateRouter } = require("./routes/datesRoutes.js");
+
 const mongoose = require("mongoose");
 const mongoDB =
   "mongodb+srv://" +
@@ -33,7 +36,7 @@ main().catch((err) => console.log(err));
 app.use(express.json());
 
 app.use("/user", userRouter);
-//app.use("/date", dateRouter);
+app.use("/date", dateRouter);
 
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
