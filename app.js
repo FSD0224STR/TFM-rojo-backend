@@ -9,7 +9,7 @@ const cors = require("cors");
 // };
 
 const app = express(); //Instancia
-const port = process.env.port || 3000; //Puerto donde va a funcionar
+const port = 3000; //Puerto donde va a funcionar
 
 const { userRouter } = require("./routes/userRoutes.js");
 
@@ -34,7 +34,7 @@ main().catch((err) => console.log(err));
 app.use(express.json());
 
 app.use("/user", userRouter);
-app.use("/date", dateRouter);
+//app.use("/date", dateRouter);
 
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
