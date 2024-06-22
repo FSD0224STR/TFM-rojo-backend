@@ -9,9 +9,14 @@ const corsOptions = {
 };
 
 const app = express(); //Instancia
-const port = process.env.port || 3000; //Puerto donde va a funcionar
 app.use(cors(corsOptions));
-// app.use(cors());
+const port = process.env.port || 3000; //Puerto donde va a funcionar
+
+
+const { userRouter } = require("./Routes/userRoutes.js");
+const { dateRouter } = require("./Routes/datesRoutes.js");
+
+
 require("dotenv").config();
 
 const { userRouter } = require("./Routes/userRoutes.js");
