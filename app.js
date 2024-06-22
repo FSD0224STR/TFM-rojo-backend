@@ -12,10 +12,15 @@ const app = express(); //Instancia
 app.use(cors(corsOptions));
 const port = process.env.port || 3000; //Puerto donde va a funcionar
 
+
 const { userRouter } = require("./Routes/userRoutes.js");
 const { dateRouter } = require("./Routes/datesRoutes.js");
 
+
 require("dotenv").config();
+
+const { userRouter } = require("./Routes/userRoutes.js");
+const { dateRouter } = require("./Routes/datesRoutes.js");
 
 const mongoose = require("mongoose");
 const mongoDB =
