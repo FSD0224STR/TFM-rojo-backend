@@ -13,6 +13,8 @@ const {
   updateUser,
 } = require("../Controllers/userController.js");
 
+const { uploadImage } = require("../Controllers/ImageController.js");
+
 const userRouter = Router();
 
 userRouter.post("/newUser", uniqueUser, addUser);
@@ -22,5 +24,6 @@ userRouter.get("/me", isAuthenticated);
 userRouter.put("/updatePassword", userExists, updatePassword);
 userRouter.post("/searchUser", searchUser);
 userRouter.put("/updateUser", updateUser);
+userRouter.post("/uploadImage", uploadImage);
 
 module.exports = { userRouter };
