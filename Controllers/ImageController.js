@@ -16,9 +16,9 @@ const opts = {
 const cloudinaryImageLoad = async (image) => {
   //imgage = > base64
   // console.log(Image);
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     cloudinary.v2.uploader.upload(image, opts, (error, result) => {
-      // console.log(result);
+      // console.log("result cloudinary ", result);
       if (result && result.secure_url) {
         return resolve(result.secure_url);
       }
@@ -28,21 +28,13 @@ const cloudinaryImageLoad = async (image) => {
   });
 };
 
-module.exports.uploadImage = async (req, res) => {
-  await cloudinaryImageLoad(req.body.base64)
+module.exports.uploadImage = (req, res) => {
+  cloudinaryImageLoad(req.body.base64)
     .then((data) => {
-      console.log(data);
-      res.status(200).json({ msg: "url" });
+      // console.log("Info", data);
+      res.status(200).json({ url: data });
     })
     .catch((err) => res.status(500).send(err));
-  // await cloudinary.uploader.upload(image, opts, (error, result) => {
-  //   console.log(result);
-  //   if (result && result.secure_url) {
-  //     res.status(200).json({url: result.secure_url})
-  //   }
-  //   console.log(error.message);
-  //   res.status(500).json({message: error.message});
-  // });
 };
 
 // module.exports = {

@@ -11,9 +11,11 @@ const userSchema = new mongoose.Schema(
     province: { type: String },
     birthDay: { type: String, required: true },
     roles: { type: String, required: true },
-    prefix: { type: String, required: true },
+    // prefix: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
+    // profilePhoto: { type: [string] },
+    fileUrlLink: { type: String },
   },
   { timestamps: true }
 );
