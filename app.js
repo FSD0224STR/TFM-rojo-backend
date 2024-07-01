@@ -14,6 +14,7 @@ require("dotenv").config();
 
 const { userRouter } = require("./Routes/userRoutes");
 const { dateRouter } = require("./Routes/datesRoutes");
+const { billRouter } = require("./Routes/billRoutes");
 
 const mongoose = require("mongoose");
 const mongoDB =
@@ -35,6 +36,7 @@ app.use(express.json());
 
 app.use("/user", userRouter);
 app.use("/date", dateRouter);
+app.use("/bill", billRouter);
 
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
