@@ -9,6 +9,8 @@ const jwt = require("jsonwebtoken");
 const tokenSecret = process.env.MYTOKENSECRET;
 
 const uniqueUser = async (req, res, next) => {
+  // console.log("user", req.body.email);
+  // console.log("found", user.email);
   await userModel
     .findOne({ email: req.body.email })
     .then((user) => {
