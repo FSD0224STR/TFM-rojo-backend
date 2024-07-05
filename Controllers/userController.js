@@ -14,8 +14,8 @@ const uniqueUser = async (req, res, next) => {
   await userModel
     .findOne({ email: req.body.email })
     .then((user) => {
-      // console.log("user", req.body.email);
-      // console.log("found", user.email);
+      console.log("user", req.body.email);
+      console.log("found", user.email);
       res.status(409).json({ msg: "User already exists BD" });
     })
     .catch(() => {
@@ -25,12 +25,14 @@ const uniqueUser = async (req, res, next) => {
 };
 
 const addUser = async (req, res) => {
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  // console.log(hashedPassword);
+  if (req.body.password !== undefined) {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  }
+
   await userModel
     .create({
       ...req.body,
-      password: hashedPassword,
+      password: req.body?.password !== undefined ? hashedPassword : "",
     })
     .then((docInDb) => {
       // console.log(req.body);
