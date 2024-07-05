@@ -11,6 +11,7 @@ const {
   updatePassword,
   searchUser,
   updateUser,
+  sendEmailToUserFromAdmin,
 } = require("../Controllers/userController.js");
 
 const { uploadImage } = require("../Controllers/ImageController.js");
@@ -25,5 +26,6 @@ userRouter.put("/updatePassword", userExists, updatePassword);
 userRouter.post("/searchUser", searchUser);
 userRouter.put("/updateUser", updateUser);
 userRouter.post("/uploadImage", uploadImage);
+userRouter.post("/sendEmail", sendEmailToUserFromAdmin);
 
 module.exports = { userRouter };
