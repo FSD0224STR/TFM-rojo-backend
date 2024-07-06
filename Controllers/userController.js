@@ -6,11 +6,25 @@ const bcrypt = require("bcryptjs");
 // Libreria para generar token
 const jwt = require("jsonwebtoken");
 
+const nodemailer = require("nodemailer");
+
+const bodyParser = require('body-parser');
+
 const tokenSecret = process.env.MYTOKENSECRET;
+const emailapppass = process.env.EMAILAPPPASS;
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: true,
+  auth: {
+    user: "molarisapp@gmail.com",
+    pass: emailapppass,
+  },
+});
 
 const uniqueUser = async (req, res, next) => {
-  // console.log("user", req.body.email);
-  // console.log("found", user.email);
   await userModel
     .findOne({ email: req.body.email })
     .then((user) => {
@@ -35,15 +49,25 @@ const addUser = async (req, res) => {
       password: req.body?.password !== undefined ? hashedPassword : "",
     })
     .then((docInDb) => {
-      // console.log(req.body);
+      const email = {
+        from: "molarisapp@gmail.com",
+        to: docInDb.email,
+        subject: "Bienvenido a Molaris",
+        text: `Hola ${docInDb.name}, bienvenido a Molaris.`,
+      }
+      transporter.sendMail(email, function (err, info) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
       res.status(200).json(docInDb);
     })
     .catch((err) => {
-      // console.log(err.code);
       if (err.code === 11000) {
         res.status(409).json({ msg: "User already exists E11000" });
       } else {
-        // console.log(err);
         res.status(500).json(err);
       }
     });
@@ -121,6 +145,25 @@ const getMyUserInfo = async (req, res) => {
   };
   // console.log(modifiedUser);
   res.status(200).json(modifiedUser);
+  next();
+};
+
+const sendEmailToUserFromAdmin = async (req, res) => {
+  const email = {
+    from: "molarisapp@gmail.com",
+    to: req.body.email,
+    subject: req.body.subject,
+    text: req.body.message,
+  };
+  transporter.sendMail(email, function (err, info) {
+    if (err) {
+      console.log(err);
+      res.status(500).json(err);
+    } else {
+      console.log("Email sent: " + info.response);
+      res.status(200).json({ msg: "Email sent" });
+    }
+  });
 };
 
 const userExists = async (req, res, next) => {
@@ -205,4 +248,5 @@ module.exports = {
   updatePassword,
   searchUser,
   updateUser,
+  sendEmailToUserFromAdmin,
 };
