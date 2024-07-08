@@ -12,11 +12,11 @@ const billSchema = new Schema(
  
   {
     billNumber: {type: "number", required: false},
-    idPatient: { type: "string", required: false },
+    Patient: { type: "string", required: false },
     date: { type: "string", required: false },
     description: { type: "string", required: false },
     treatments:[treatmentSchema],
-    totalBill: { type: "string", required: false },
+    totalSum: { type: "string", required: false },
     status: { type: "string", required: false },
   },
   { timestamps: true }
