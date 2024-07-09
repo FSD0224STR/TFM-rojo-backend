@@ -29,6 +29,7 @@ const port = process.env.port || 3000; //Puerto donde va a funcionar
 
 const { userRouter } = require("./Routes/userRoutes.js");
 const { dateRouter } = require("./Routes/datesRoutes.js");
+const { billRouter } = require("./Routes/billRoutes");
 
 const mongoose = require("mongoose");
 const { imagesRouter } = require("./Routes/loadImagesRoutes");
@@ -51,6 +52,7 @@ app.use(express.json());
 
 app.use("/user", userRouter);
 app.use("/date", dateRouter);
+app.use("/bill", billRouter);
 // app.use("/images", imagesRouter);
 
 const upload = multer({ dest: "uploads/" });
