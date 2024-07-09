@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     // prefix: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
-    // profilePhoto: { type: [string] },
+    profilePhoto: { type: Object },
     fileUrlLink: { type: String },
   },
   { timestamps: true }
