@@ -1,21 +1,19 @@
 const mongoose = require("mongoose");
 let Schema = mongoose.Schema;
-let treatmentSchema= new Schema ({
-  price: {type:"Number"},
-  iva:{type:"Number"},
-  qty: {type:"Number"},
-  total: {type:"Number"},
-  treatment: {type:"string"},
-}
-);
+let treatmentSchema = new Schema({
+  price: { type: "Number" },
+  iva: { type: "Number" },
+  qty: { type: "Number" },
+  total: { type: "Number" },
+  treatment: { type: "string" },
+});
 const billSchema = new Schema(
- 
   {
-    billNumber: {type: "number", required: false},
-    Patient: { type: "string", required: false },
+    billNumber: { type: "number", required: false },
+    Patient: [{ type: Schema.Types.ObjectId, ref: "User" }],
     date: { type: "string", required: false },
     description: { type: "string", required: false },
-    treatments:[treatmentSchema],
+    treatments: [treatmentSchema],
     totalSum: { type: "string", required: false },
     status: { type: "string", required: false },
   },
