@@ -23,13 +23,28 @@ const getBills = async (req, res) => {
 //     .catch((err) => res.status(500).json(err));
 // };
 
-// const changeStatusBill = async (req, res) => {
-//   console.log(req.body);
-// };
+ const updateBill = async (req, res) => {
+   // console.log("update:", req.body);
+   await billModel
+     .findByIdAndUpdate(req.body._id, { ...req.body })
+     .then((data) => res.status(200).json({ msg: "success", data:data }))
+     .catch((err) => res.status(500).json(err));
+ 
+ };
+
+ const searchedBill = async (req, res) => {
+  console.log(req.body)
+  await billModel
+  .findById(req.body.id)
+  .then((data) => res.status(200).json(data))
+  .catch((err) => res.status(500).json(err));
+
+ }
 
 module.exports = {
   newBill,
   getBills,
  // deleteBill,
- // changeStatusBill,
+ updateBill,
+ searchedBill,
 };
