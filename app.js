@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
-const cloudinary = require("cloudinary");
+const cloudinary = require('cloudinary').v2;
 const cors = require("cors");
 const multer = require("multer");
 const corsOptions = {
@@ -9,13 +9,6 @@ const corsOptions = {
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
-
-// Configurar Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 const app = express(); //Instancia
 app.use(cors(corsOptions));
@@ -29,9 +22,9 @@ const port = process.env.port || 3000; //Puerto donde va a funcionar
 
 const { userRouter } = require("./Routes/userRoutes.js");
 const { dateRouter } = require("./Routes/datesRoutes.js");
+const { billRouter } = require("./Routes/billRoutes");
 
 const mongoose = require("mongoose");
-const { imagesRouter } = require("./Routes/loadImagesRoutes");
 const mongoDB =
   "mongodb+srv://" +
   process.env.DB_USER +
@@ -51,32 +44,55 @@ app.use(express.json());
 
 app.use("/user", userRouter);
 app.use("/date", dateRouter);
+app.use("/bill", billRouter);
 // app.use("/images", imagesRouter);
-
-const upload = multer({ dest: "uploads/" });
-
-app.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No se han enviado archivos");
-  }
-
-  cloudinary.uploader.upload(req.file.path, (error, result) => {
-    if (error) {
-      return res.status(500).send(error);
-    }
-
-    // Puedo hacer la inserción de toda la info del usuario incluyendo la URL de su imagen de perfil
-
-    // Mostramos la info de Cloudinary
-    console.log("El contenido de result es", result);
-    console.log("La URL donde se ha guardado la imagen es:", result.url);
-
-    res.status(200).send(result.url);
-  });
-});
 
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
+});
+
+// Websockets
+
+const { Server } = require("socket.io");
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  //detección de conexión
+
+  // socket.on("connect", (user) => {
+  // console.log(user);
+  console.log("a user connected");
+  io.emit("userConnection", { msg: "Un usuario se ha conectado" });
+  // });
+
+  // detección de desconexión
+  socket.on("disconnect", (msg) => {
+    console.log("user disconnected");
+    io.emit("userConnection", { msg: "Un usuario se ha desconectado" });
+  });
+
+  //detección de nuevo evento
+  socket.on("login", (user) => {
+    console.log("hola", user);
+    io.emit("toastMessage", user);
+  });
+
+  socket.on("msg", (msg) => {
+    console.log(msg);
+    console.log(
+      "He recibido un nuevo mensaje de ",
+      msg.user,
+      "que dice: ",
+      msg.message
+    );
+    io.emit("newMessage", msg);
+  });
 });
 
 module.exports = { app, server };

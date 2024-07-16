@@ -22,7 +22,7 @@ const cloudinaryImageLoad = async (image) => {
       if (result && result.secure_url) {
         return resolve(result.secure_url);
       }
-      console.log(error.message);
+      // console.log(error.message);
       return reject({ message: error.message });
     });
   });
@@ -36,7 +36,3 @@ module.exports.uploadImage = (req, res) => {
     })
     .catch((err) => res.status(500).send(err));
 };
-
-// module.exports = {
-//   uploadImage,
-// };

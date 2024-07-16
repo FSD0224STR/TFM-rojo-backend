@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     lastName: { type: String },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: false },
     country: { type: String },
     province: { type: String },
     birthDay: { type: String, required: true },
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     // prefix: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
-    // profilePhoto: { type: [string] },
+    profilePhoto: { type: Object },
     fileUrlLink: { type: String },
   },
   { timestamps: true }
