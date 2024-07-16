@@ -10,13 +10,6 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 
-// Configurar Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
 const app = express(); //Instancia
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "25mb" }));
@@ -32,7 +25,6 @@ const { dateRouter } = require("./Routes/datesRoutes.js");
 const { billRouter } = require("./Routes/billRoutes");
 
 const mongoose = require("mongoose");
-const { imagesRouter } = require("./Routes/loadImagesRoutes");
 const mongoDB =
   "mongodb+srv://" +
   process.env.DB_USER +
@@ -55,30 +47,53 @@ app.use("/date", dateRouter);
 app.use("/bill", billRouter);
 // app.use("/images", imagesRouter);
 
-const upload = multer({ dest: "uploads/" });
+const server = app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
 
-app.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No se han enviado archivos");
-  }
+// Websockets
 
-  cloudinary.uploader.upload(req.file.path, (error, result) => {
-    if (error) {
-      return res.status(500).send(error);
-    }
+const { Server } = require("socket.io");
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  //detección de conexión
+  console.log("a user connected");
+  io.emit("userConnection", { msg: "Un usuario se ha conectado" });
+  // detección de desconexión
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    io.emit("userConnection", { msg: "Un usuario se ha desconectado" });
+  });
+  //detección de nuevo evento
+  socket.on("login", (user) => {
+    console.log(user);
+    io.emit("message", "Hola" + user.id);
+  });
 
-    // Puedo hacer la inserción de toda la info del usuario incluyendo la URL de su imagen de perfil
+  socket.on("msg", (msg) => {
+    console.log(msg);
+    console.log(
+      "He recibido un nuevo mensaje de ",
+      msg.nickname,
+      "que dice: ",
+      msg.msg
+    );
+    io.emit("msg", msg);
+  });
 
-    // Mostramos la info de Cloudinary
-    console.log("El contenido de result es", result);
-    console.log("La URL donde se ha guardado la imagen es:", result.url);
-
-    res.status(200).send(result.url);
+  socket.on("status", (status) => {
+    console.log("status", status);
+    io.emit("status", status);
   });
 });
 
-const server = app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.get("/", (req, res) => {
+  res.send("<h1>Websockets!</h1>");
 });
 
 module.exports = { app, server };
