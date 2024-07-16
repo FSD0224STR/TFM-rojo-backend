@@ -1,7 +1,7 @@
 const { billModel } = require("../Models/bill.model ");
 
 const newBill = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   await billModel
     .create(req.body)
     .then((docInDb) => res.status(200).json(docInDb))

@@ -54,46 +54,45 @@ const server = app.listen(port, () => {
 // Websockets
 
 const { Server } = require("socket.io");
+
 const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
   },
 });
+
 io.on("connection", (socket) => {
   //detección de conexión
+
+  // socket.on("connect", (user) => {
+  // console.log(user);
   console.log("a user connected");
   io.emit("userConnection", { msg: "Un usuario se ha conectado" });
+  // });
+
   // detección de desconexión
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (msg) => {
     console.log("user disconnected");
     io.emit("userConnection", { msg: "Un usuario se ha desconectado" });
   });
+
   //detección de nuevo evento
   socket.on("login", (user) => {
-    console.log(user);
-    io.emit("message", "Hola" + user.id);
+    console.log("hola", user);
+    io.emit("toastMessage", user);
   });
 
   socket.on("msg", (msg) => {
     console.log(msg);
     console.log(
       "He recibido un nuevo mensaje de ",
-      msg.nickname,
+      msg.user,
       "que dice: ",
-      msg.msg
+      msg.message
     );
-    io.emit("msg", msg);
+    io.emit("newMessage", msg);
   });
-
-  socket.on("status", (status) => {
-    console.log("status", status);
-    io.emit("status", status);
-  });
-});
-
-app.get("/", (req, res) => {
-  res.send("<h1>Websockets!</h1>");
 });
 
 module.exports = { app, server };
