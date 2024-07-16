@@ -16,21 +16,30 @@ const getBills = async (req, res) => {
     .catch((err) => res.status(500).json(err));
 };
 
-// const deleteBill= async (req, res) => {
-//   // console.log(req.params.id);
-//   await billDataModel
-//     .findByIdAndDelete(req.params.id, req.body)
-//     .then((data) => res.status(200).json({ msg: "Deleted", data: data }))
-//     .catch((err) => res.status(500).json(err));
-// };
 
-// const changeStatusBill = async (req, res) => {
-//   console.log(req.body);
-// };
+ const updateBill = async (req, res) => {
+   // console.log("update:", req.body);
+   await billModel
+     .findByIdAndUpdate(req.body.id, { ...req.body })
+     .then((data) => res.status(200).json({ msg: "success", data:data }))
+     .catch((err) => res.status(500).json(err));
+ 
+ };
+
+ const searchedBill = async (req, res) => {
+  console.log(req.body)
+  await billModel
+  .findById(req.body.id)    
+  .populate("Patient")
+  .then((data) => res.status(200).json(data))
+  .catch((err) => res.status(500).json(err));
+
+ }
 
 module.exports = {
   newBill,
   getBills,
   // deleteBill,
-  // changeStatusBill,
+  updateBill,
+ searchedBill,
 };
