@@ -1,4 +1,4 @@
-const { billModel} = require ("../Models/bill.model ")
+const { billModel } = require("../Models/bill.model ");
 
 const newBill = async (req, res) => {
   console.log(req.body);
@@ -11,7 +11,8 @@ const newBill = async (req, res) => {
 const getBills = async (req, res) => {
   billModel
     .find()
-    .then((data) => res.status(200).json({data:data}))
+    .populate("Patient")
+    .then((data) => res.status(200).json({ data: data }))
     .catch((err) => res.status(500).json(err));
 };
 
@@ -30,6 +31,6 @@ const getBills = async (req, res) => {
 module.exports = {
   newBill,
   getBills,
- // deleteBill,
- // changeStatusBill,
+  // deleteBill,
+  // changeStatusBill,
 };
