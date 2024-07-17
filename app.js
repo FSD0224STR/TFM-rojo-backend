@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
 const multer = require("multer");
 const corsOptions = {
@@ -67,24 +67,28 @@ io.on("connection", (socket) => {
 
   // socket.on("connect", (user) => {
   // console.log(user);
-  console.log("a user connected");
+  // console.log("a user connected");
   io.emit("userConnection", { msg: "Un usuario se ha conectado" });
   // });
 
   // detección de desconexión
-  socket.on("disconnect", (msg) => {
-    console.log("user disconnected");
-    io.emit("userConnection", { msg: "Un usuario se ha desconectado" });
+  socket.on("disconnect", (user) => {
+    console.log("user disconnected", user);
   });
 
   //detección de nuevo evento
   socket.on("login", (user) => {
-    console.log("hola", user);
-    io.emit("toastMessage", user);
+    // console.log("hola", user);
+    io.emit("loginMessage", user);
+  });
+
+  socket.on("logout", (user) => {
+    // console.log("adios", user);
+    io.emit("logoutMessage", user);
   });
 
   socket.on("msg", (msg) => {
-    console.log(msg);
+    // console.log(msg);
     console.log(
       "He recibido un nuevo mensaje de ",
       msg.user,
@@ -92,6 +96,16 @@ io.on("connection", (socket) => {
       msg.message
     );
     io.emit("newMessage", msg);
+  });
+
+  socket.on("typing", (user) => {
+    // console.log(user, "is typing...");
+    io.emit("typingMessage", user);
+  });
+
+  socket.on("stopTyping", (user) => {
+    // console.log(user, "has stopped typing.");
+    io.emit("stopTypingMessage", user);
   });
 });
 
