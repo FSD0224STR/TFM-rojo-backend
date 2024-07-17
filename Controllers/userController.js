@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 
 const nodemailer = require("nodemailer");
 
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 
 const tokenSecret = process.env.MYTOKENSECRET;
 const emailapppass = process.env.EMAILAPPPASS;
@@ -28,8 +28,8 @@ const uniqueUser = async (req, res, next) => {
   await userModel
     .findOne({ email: req.body.email })
     .then((user) => {
-      console.log("user", req.body.email);
-      console.log("found", user.email);
+      // console.log("user", req.body.email);
+      // console.log("found", user.email);
       res.status(409).json({ msg: "User already exists BD" });
     })
     .catch(() => {
@@ -54,15 +54,16 @@ const addUser = async (req, res) => {
         to: docInDb.email,
         subject: "Bienvenido a Molaris",
         text: `Hola ${docInDb.name}, bienvenido a Molaris.`,
-      }
+      };
       transporter.sendMail(email, function (err, info) {
         if (err) {
           console.log(err);
+          res.status(500).json({ msg: "Error sending email" });
         } else {
           console.log("Email sent: " + info.response);
+          res.status(200).json({ msg: "Email sent" });
         }
       });
-      res.status(200).json(docInDb);
     })
     .catch((err) => {
       if (err.code === 11000) {
@@ -149,6 +150,7 @@ const getMyUserInfo = async (req, res) => {
 };
 
 const sendEmailToUserFromAdmin = async (req, res) => {
+  // console.log(emailapppass);
   const email = {
     from: "molarisapp@gmail.com",
     to: req.body.email,
@@ -157,12 +159,13 @@ const sendEmailToUserFromAdmin = async (req, res) => {
   };
   transporter.sendMail(email, function (err, info) {
     if (err) {
-      console.log(err);
+      // console.log(err);
       res.status(500).json(err);
     } else {
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       res.status(200).json({ msg: "Email sent" });
     }
+    return res.end();
   });
 };
 
