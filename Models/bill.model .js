@@ -10,7 +10,7 @@ let treatmentSchema = new Schema({
 const billSchema = new Schema(
   {
     billNumber: { type: "number", required: false },
-    Patient: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    Patient: { type: Schema.Types.ObjectId, ref: "User" },
     date: { type: "string", required: false },
     description: { type: "string", required: false },
     treatments: [treatmentSchema],
