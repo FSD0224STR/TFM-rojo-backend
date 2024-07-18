@@ -11,6 +11,8 @@ const newDate = async (req, res) => {
 const getDates = async (req, res) => {
   datesModel
     .find()
+    .populate("idPatient")
+    .populate("idDoctor")
     .then((data) => res.status(200).json(data))
     .catch((err) => res.status(500).json(err));
 };

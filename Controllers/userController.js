@@ -25,11 +25,12 @@ const transporter = nodemailer.createTransport({
 });
 
 const uniqueUser = async (req, res, next) => {
+  console.log(req.body.email);
   await userModel
     .findOne({ email: req.body.email })
     .then((user) => {
-      // console.log("user", req.body.email);
-      // console.log("found", user.email);
+      console.log("user", req.body.email);
+      console.log("found", user.email);
       res.status(409).json({ msg: "User already exists BD" });
     })
     .catch(() => {
@@ -38,10 +39,29 @@ const uniqueUser = async (req, res, next) => {
     });
 };
 
+const sendWelcomeEmail = async (req, res, next) => {
+  const email = {
+    from: "molarisapp@gmail.com",
+    to: docInDb.email,
+    subject: "Bienvenido a Molaris",
+    text: `Hola ${docInDb.name}, bienvenido a Molaris.`,
+  };
+  transporter.sendMail(email, function (err, info) {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ msg: "Error sending email" });
+    } else {
+      console.log("Email sent: " + info.response);
+      next();
+    }
+  });
+};
+
 const addUser = async (req, res) => {
-  if (req.body.password !== undefined) {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  }
+  const hashedPassword = await bcrypt.hash(
+    req?.body?.password ? req?.body?.password : "",
+    10
+  );
 
   await userModel
     .create({
@@ -49,24 +69,12 @@ const addUser = async (req, res) => {
       password: req.body?.password !== undefined ? hashedPassword : "",
     })
     .then((docInDb) => {
-      const email = {
-        from: "molarisapp@gmail.com",
-        to: docInDb.email,
-        subject: "Bienvenido a Molaris",
-        text: `Hola ${docInDb.name}, bienvenido a Molaris.`,
-      };
-      transporter.sendMail(email, function (err, info) {
-        if (err) {
-          console.log(err);
-          res.status(500).json({ msg: "Error sending email" });
-        } else {
-          console.log("Email sent: " + info.response);
-          res.status(200).json({ msg: "Email sent" });
-        }
-      });
+      res.status(200).json(docInDb);
     })
+
     .catch((err) => {
       if (err.code === 11000) {
+        console.log("User already exists E11000");
         res.status(409).json({ msg: "User already exists E11000" });
       } else {
         res.status(500).json(err);

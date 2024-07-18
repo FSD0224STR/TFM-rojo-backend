@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-
-const datesSchema = new mongoose.Schema(
+let Schema = mongoose.Schema;
+const datesSchema = new Schema(
   {
-    idPatient: { type: "string", required: true },
-    idDoctor: { type: "string", required: true },
+    idPatient: { type: Schema.Types.ObjectId, ref: "User" },
+    idDoctor: { type: Schema.Types.ObjectId, ref: "User" },
     date: { type: "string", required: true },
     time: { type: "string", required: true },
     timeFinish: { type: "string", required: true },
