@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
-const multer = require("multer");
+
 const corsOptions = {
   origin: "*",
   credentials: true, //access-control-allow-credentials:true
