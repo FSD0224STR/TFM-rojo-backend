@@ -18,7 +18,8 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   next();
 });
-const port = process.env.port || 3000; //Puerto donde va a funcionar
+
+const port = process.env.PORT || 3000; //Puerto donde va a funcionar
 
 const { userRouter } = require("./Routes/userRoutes.js");
 const { dateRouter } = require("./Routes/datesRoutes.js");
