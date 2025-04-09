@@ -38,6 +38,7 @@ const mongoDB =
 async function main() {
   await mongoose.connect(mongoDB).then(console.log("Connected to MongoDB"));
 }
+
 main().catch((err) => console.log(err));
 
 app.use(express.json());
